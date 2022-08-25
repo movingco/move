@@ -316,7 +316,7 @@ let hex_u128: u128 = 0xDEADBEEF;
 <p>Bitwise operations do not abort.</p>
 <table><thead><tr><th>Syntax</th><th>Operation</th><th>Description</th></tr></thead><tbody>
 <tr><td><code>&amp;</code></td><td>bitwise and</td><td>Performs a boolean and for each bit pairwise</td></tr>
-<tr><td>`</td><td>`</td><td>bitwise or</td></tr>
+<tr><td><code>\|</code></td><td>bitwise or</td><td>Performs a boolean or for each bit pairwise</td></tr>
 <tr><td><code>^</code></td><td>bitwise xor</td><td>Performs a boolean exclusive or for each bit pairwise</td></tr>
 </tbody></table>
 <h3 id="bit-shifts"><a class="header" href="#bit-shifts">Bit Shifts</a></h3>
@@ -394,7 +394,7 @@ literals.</p>
 <p>To distinguish when an address is being used in an expression context or not, the
 syntax when using an address differs depending on the context where it's used:</p>
 <ul>
-<li>When an address is used as an expression the address must be prefixed by the <code>@</code> character, i.e., <code>@</code><a href="./integers.html"><code>&lt;numerical_value&gt;</code></a><code>or</code>@&lt;named_address_identifier&gt;`.</li>
+<li>When an address is used as an expression the address must be prefixed by the <code>@</code> character, i.e., <code>@</code><a href="./integers.html"><code>&lt;numerical_value&gt;</code></a> or <code>@&lt;named_address_identifier&gt;</code>.</li>
 <li>Outside of expression contexts, the address may be written without the leading <code>@</code> character, i.e., <a href="./integers.html"><code>&lt;numerical_value&gt;</code></a> or <code>&lt;named_address_identifier&gt;</code>.</li>
 </ul>
 <p>In general, you can think of <code>@</code> as an operator that takes an address from being a namespace item to being an expression item.</p>
@@ -453,7 +453,7 @@ collection of <code>T</code>'s that can grow or shrink by pushing/popping values
 vector's usage. If the type cannot be inferred, or simply for added clarity, the type can be
 specified explicitly:</p>
 <pre><code class="language-move">vector&lt;T&gt;[]: vector&lt;T&gt;
-vecctor&lt;T&gt;[e1, ..., en]: vector&lt;T&gt;
+vector&lt;T&gt;[e1, ..., en]: vector&lt;T&gt;
 </code></pre>
 <h4 id="example-vector-literals"><a class="header" href="#example-vector-literals">Example Vector Literals</a></h4>
 <pre><code class="language-move">(vector[]: vector&lt;bool&gt;);
@@ -514,7 +514,7 @@ library:</p>
 <tr><td><code>vector::contains&lt;T&gt;(v: &amp;vector&lt;T&gt;, e: &amp;T): bool</code></td><td>Return true if <code>e</code> is in the vector <code>v</code></td><td>Never</td></tr>
 <tr><td><code>vector::swap&lt;T&gt;(v: &amp;mut vector&lt;T&gt;, i: u64, j: u64)</code></td><td>Swaps the elements at the <code>i</code>th and <code>j</code>th indices in the vector <code>v</code>.</td><td>If <code>i</code> or <code>j</code> is out of bounds</td></tr>
 <tr><td><code>vector::reverse&lt;T&gt;(v: &amp;mut vector&lt;T&gt;)</code></td><td>Reverses the order of the elements in the vector <code>v</code> in place</td><td>Never</td></tr>
-<tr><td><code>vector::index_of&lt;T&gt;(v: &amp;vector&lt;T&gt;, e: &amp;T): bool</code></td><td>Return <code>(true, i)</code> if <code>e</code> is in the vector <code>v</code> at index <code>i</code>. Otherwise, returns <code>(false, 0)</code>.</td><td>Never</td></tr>
+<tr><td><code>vector::index_of&lt;T&gt;(v: &amp;vector&lt;T&gt;, e: &amp;T): (bool, u64)</code></td><td>Return <code>(true, i)</code> if <code>e</code> is in the vector <code>v</code> at index <code>i</code>. Otherwise, returns <code>(false, 0)</code>.</td><td>Never</td></tr>
 <tr><td><code>vector::remove&lt;T&gt;(v: &amp;mut vector&lt;T&gt;, i: u64): T</code></td><td>Remove the <code>i</code>th element of the vector <code>v</code>, shifting all subsequent elements. This is O(n) and preserves ordering of elements in the vector.</td><td>If <code>i</code> is out of bounds.</td></tr>
 <tr><td><code>vector::swap_remove&lt;T&gt;(v: &amp;mut vector&lt;T&gt;, i: u64): T</code></td><td>Swap the <code>i</code>th element of the vector <code>v</code> with the last element and then pop the vector, This is O(1), but does not preserve ordering of elements in the vector.</td><td>If <code>i</code> is out of bounds.</td></tr>
 </tbody></table>
@@ -677,7 +677,7 @@ This rule prevents the destruction of resource values:</p>
 <h2 id="freeze-inference"><a class="header" href="#freeze-inference"><code>freeze</code> inference</a></h2>
 <p>A mutable reference can be used in a context where an immutable reference is expected:</p>
 <pre><code class="language-move">let x = 7;
-let y: &amp;mut u64 = &amp;mut x;
+let y: &amp;u64 = &amp;mut x;
 </code></pre>
 <p>This works because the under the hood, the compiler inserts <code>freeze</code> instructions where they are
 needed. Here are a few more examples of <code>freeze</code> inference in action:</p>
@@ -1728,7 +1728,6 @@ value on some branches, but not all. For example:</p>
     else abort 42;
 //       ^^^^^^^^ `abort 42` has type `bool`
 </code></pre>
-<pre><code></code></pre>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="conditionals"><a class="header" href="#conditionals">Conditionals</a></h1>
 <p>An <code>if</code> expression specifies that some code should only be evaluated if a certain condition is true. For example:</p>
 <pre><code class="language-move">if (x &gt; 5) x = x - 5
@@ -2613,7 +2612,7 @@ module m {
 <h2 id="storing-resources-in-global-storage"><a class="header" href="#storing-resources-in-global-storage">Storing Resources in Global Storage</a></h2>
 <p>Only structs with the <code>key</code> ability can be saved directly in
 <a href="./global-storage-operators.html">persistent global storage</a>. All values stored within those <code>key</code>
-structs must have the <code>store</code> abilities. See the [ability](./abilities] and
+structs must have the <code>store</code> ability. See the <a href="./abilities">ability</a> and
 <a href="./global-storage-operators.html">global storage</a> chapters for more detail.</p>
 <h2 id="examples-3"><a class="header" href="#examples-3">Examples</a></h2>
 <p>Here are two short examples of how you might use structs to represent valuable data (in the case of
@@ -3588,7 +3587,7 @@ module example {
 </code></pre>
 <h2 id="uniqueness"><a class="header" href="#uniqueness">Uniqueness</a></h2>
 <p>Inside a given scope, all aliases introduced by <code>use</code> declarations must be unique.</p>
-<p>For a module, this means aliases introduced by <code>use</code> cannot overla</p>
+<p>For a module, this means aliases introduced by <code>use</code> cannot overlap</p>
 <pre><code class="language-move=">address 0x42 {
 module example {
 
@@ -4265,7 +4264,7 @@ Test result: OK. Total tests: 3; passed: 3; failed: 0
     }
 }
 </code></pre>
-<p>we would get get the following output when running the tests:</p>
+<p>we would get the following output when running the tests:</p>
 <pre><code>$ move test -g
 CACHED MoveStdlib
 BUILDING TestExample
