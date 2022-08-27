@@ -149,6 +149,7 @@ pub enum UnannotatedExp_ {
     ModuleCall(Box<ModuleCall>),
     Builtin(Box<BuiltinFunction>, Box<Exp>),
     Vector(Loc, usize, Box<Type>, Box<Exp>),
+    Index(Box<Exp>, Box<Exp>),
 
     IfElse(Box<Exp>, Box<Exp>, Box<Exp>),
     While(Box<Exp>, Box<Exp>),

@@ -438,7 +438,7 @@ pub enum Exp_ {
 
     Borrow(bool, Box<Exp>),
     ExpDotted(Box<ExpDotted>),
-    Index(Box<Exp>, Box<Exp>), // spec only (no mutation needed right now)
+    Index(Box<Exp>, Box<Exp>),
 
     Cast(Box<Exp>, Type),
     Annotate(Box<Exp>, Type),

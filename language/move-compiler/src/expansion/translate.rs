@@ -1931,17 +1931,7 @@ fn exp_(context: &mut Context, sp!(loc, pe_): P::Exp) -> E::Exp {
             }
         },
         PE::Cast(e, ty) => EE::Cast(exp(context, *e), type_(context, ty)),
-        PE::Index(e, i) => {
-            if context.in_spec_context {
-                EE::Index(exp(context, *e), exp(context, *i))
-            } else {
-                let msg = "`_[_]` index operator only allowed in specifications";
-                context
-                    .env
-                    .add_diag(diag!(Syntax::SpecContextRestricted, (loc, msg)));
-                EE::UnresolvedError
-            }
-        }
+        PE::Index(e, i) => EE::Index(exp(context, *e), exp(context, *i)),
         PE::Annotate(e, ty) => EE::Annotate(exp(context, *e), type_(context, ty)),
         PE::Spec(_) if context.in_spec_context => {
             context.env.add_diag(diag!(

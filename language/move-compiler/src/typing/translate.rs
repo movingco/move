@@ -402,6 +402,11 @@ mod check_valid_constant {
                 s = format!("'{}' is", b);
                 &s
             }
+            E::Index(vector, index) => {
+                exp(context, vector);
+                exp(context, index);
+                "vector index expressions are"
+            }
             E::IfElse(eb, et, ef) => {
                 exp(context, eb);
                 exp(context, et);
@@ -1233,6 +1238,32 @@ fn exp_inner(context: &mut Context, sp!(eloc, ne_): N::Exp) -> T::Exp {
         NE::Vector(vec_loc, ty_opt, sp!(argloc, nargs_)) => {
             let args_ = exp_vec(context, nargs_);
             vector_pack(context, eloc, vec_loc, ty_opt, argloc, args_)
+        }
+        NE::Index(vec, index) => {
+            let vec_ = exp(context, vec);
+            (vec_.ty.clone(), TE::Index(vec_, exp(context, index)))
+            // let vec_ = exp(context, vec);
+            // let index_ = exp(context, index);
+            // let (vector_module, module_info) = context
+            //     .modules
+            //     .key_cloned_iter()
+            //     .find(|(k, _v)| k.value.module.value().as_str() == "vector")
+            //     .expect("Module `vector` not in scope.");
+            // let (borrow_fn, _) = module_info
+            //     .functions
+            //     .key_cloned_iter()
+            //     .find(|(k, v)| k.value().as_str() == "borrow")
+            //     .expect("Function `borrow` in module `vector`.");
+            // let vector_borrow_exp = module_call(
+            //     context,
+            //     eloc,
+            //     vector_module,
+            //     borrow_fn,
+            //     None,
+            //     vec.loc,
+            //     vec![*vec_, *index_],
+            // );
+            // vector_pack(context, eloc, vec_loc, ty_opt, argloc, args_)
         }
 
         NE::IfElse(nb, nt, nf) => {

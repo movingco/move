@@ -1057,6 +1057,7 @@ fn exp_(context: &mut Context, e: E::Exp) -> N::Exp {
             });
             NE::Vector(vec_loc, ty_opt, nes)
         }
+        EE::Index(v, i) => NE::Index(exp(context, *v), exp(context, *i)),
 
         EE::Spec(u, unbound_names) => {
             // Vars currently aren't shadowable by types/functions
@@ -1068,7 +1069,7 @@ fn exp_(context: &mut Context, e: E::Exp) -> N::Exp {
             NE::UnresolvedError
         }
         // `Name` matches name variants only allowed in specs (we handle the allowed ones above)
-        EE::Index(..) | EE::Lambda(..) | EE::Quant(..) | EE::Name(_, Some(_)) => {
+        EE::Lambda(..) | EE::Quant(..) | EE::Name(_, Some(_)) => {
             panic!("ICE unexpected specification construct")
         }
     };

@@ -321,6 +321,7 @@ pub enum UnannotatedExp_ {
 
     Borrow(bool, Box<Exp>, Field),
     BorrowLocal(bool, Var),
+    Index(Box<Exp>, Box<Exp>),
 
     Cast(Box<Exp>, BuiltinTypeName),
 

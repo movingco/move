@@ -1300,6 +1300,11 @@ fn exp_impl(
             let e = exp(context, result, None, *te);
             HE::Borrow(mut_, e, f)
         }
+        TE::Index(vec, index) => {
+            let vec_ = exp(context, result, None, *vec);
+            let index_ = exp(context, result, Some(&H::Type_::u64(index.exp.loc)), *index);
+            HE::Index(vec_, index_)
+        }
         TE::TempBorrow(mut_, te) => {
             let eb = exp_(context, result, None, *te);
             let tmp = match bind_exp_impl(context, result, eb, true).exp.value {
@@ -1699,6 +1704,7 @@ fn bind_for_short_circuit(e: &T::Exp) -> bool {
         | TE::UnaryExp(_, _)
         | TE::Borrow(_, _, _)
         | TE::TempBorrow(_, _)
+        | TE::Index(_, _)
         | TE::BinopExp(_, _, _, _) => true,
 
         TE::Unit { .. }
